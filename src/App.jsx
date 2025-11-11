@@ -174,7 +174,7 @@ const App = () => {
         <div className='md:col-span-8 col-span-10  md:w-[80vw] md:absolute md:right-1 w-[99vw]'>
           <div
             ref={scrollToAns}
-            className=' h-fit max-h-[99vh]  overflow-y-auto pr-2 sm:pb-[20vh] pt-[10vh] pb-10'
+            className=' h-auto max-h-[90vh]  overflow-y-auto pr-2 sm:pb-[20vh] pt-[10vh] pb-10'
           >
             <div className='dark:text-zinc-300 px-[5vw]  md:pr-[3vw] lg:px-[8vw] md:pl-[6vw]'>
               {" "}

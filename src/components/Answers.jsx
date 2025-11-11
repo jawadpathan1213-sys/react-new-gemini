@@ -58,11 +58,11 @@ const components = {
      
     <div className='flex w-full my-1 sm:my-3 max-w-[90vw] ]'>
       {index === 0 && totalResult > 1 ? (
-        <span className='font-medium sm:text-[25px] text-[19px] text-white'>
+        <span className='font-medium sm:text-[25px] text-[19px] dark:text-white'>
           {answer}
         </span>
       ) : heading ? (
-        <span className='font-medium sm:text-[23px] text-[17px] text-white'>
+        <span className='font-medium sm:text-[23px] text-[17px] dark:text-white'>
           {answer}
         </span>
       ) : (
@@ -70,7 +70,7 @@ const components = {
         <div
           className={
             type === "q"
-              ? " sm:px-3 px-2  md:max-w-[50vw] w-fit max-w- sm:text-[16px] text-[11px]" // question card: let it be half width on md+, full on mobile
+              ? " sm:px-3 px-2 py-2  md:max-w-[50vw] w-fit max-w- sm:text-[16px] text-[11px]" // question card: let it be half width on md+, full on mobile
               : "md:pl-3 pl-1 my-2 md:w-[60vw] w-full max-w-[90vw] sm:text-[16px] text-[11px]"
           }
         >
