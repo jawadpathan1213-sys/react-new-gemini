@@ -130,7 +130,7 @@ const App = () => {
       <div className='grid grid-cols-10 h-screen text-center'>
         <select
           onChange={(e) => setDarkMode(e.target.value)}
-          className='dark:text-white text-black z-40 fixed bottom-3 left-3 px-5 py-2 dark:bg-zinc-800 bg-zinc-200 border rounded-4xl h-10'
+          className='dark:text-white text-black z-40 fixed top-3 right-3 px-3 py-1 dark:bg-zinc-800 bg-zinc-200 border rounded-4xl h-10'
         >
           <option value='dark' className=''>
             Dark
@@ -154,7 +154,7 @@ const App = () => {
           >
             <div className='dark:text-zinc-300 px-[5vw]  md:pr-[3vw] lg:px-[8vw] md:pl-[6vw]'>
               {" "}
-              <h1 className='text-3xl md:text-4xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl  px-2'>
+              <h1 className='text-3xl md:text-4xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl  px-2 min-w-[230px]'>
                 Hello User , Ask Me Anything
               </h1>
              
@@ -173,7 +173,7 @@ const App = () => {
                   ) : null}
           </div>
           <div
-            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed bottom-[15vh] shadow-[0_0_5px_0.5px_gray] dark:shadow-none p-1'
+            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed sm:bottom-[15vh] bottom-2 shadow-[0_0_5px_0.5px_gray] dark:shadow-none sm:p-1 p-0.5'
           >
             <input
               value={question}
@@ -184,14 +184,14 @@ const App = () => {
               }}
               type='text'
               placeholder='Ask me anthing'
-              className='w-full h-full md:p-4 p-2 outline-none'
+              className='w-full h-full md:p-4 sm:p-2 p-1 outline-none'
             />
             <button
               onClick={() => askQuestion()}
               className='md:mx-4 mx-2 cursor-pointer '
             >
               <FaArrowUp
-                className={`rounded-full w-9 h-9 p-2 ${
+                className={`rounded-full sm:w-9 w-7 sm:h-9 h-7 sm:p-2 p-1 ${
                   question.trim() === ""
                     ? "dark:bg-zinc-600 bg-zinc-300 dark:text-zinc-200 text-zinc-800"
                     : "dark:text-black dark:bg-zinc-200 bg-zinc-900 text-zinc-50"
