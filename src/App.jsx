@@ -11,7 +11,14 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const history = JSON.parse(localStorage.getItem("history")) || [];
+    setRecentHistory(history);
+    console.log(history);
+  }, []);
+
   const [question, setQuestion] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
   const [result, setResult] = useState([]);
   const [selectedHistory, setSelectedHistory] = useState("");
   const [recentHistory, setRecentHistory] = useState(
@@ -21,66 +28,86 @@ const App = () => {
   const [loader, setLoader] = useState(false);
   const scrollToAns = useRef();
 
-  const askQuestion = async (text) => {
-    if (!question.trim() && !selectedHistory.trim()) {
-      return false;
-    }
+  const askQuestion = async (text, fromHistory = false) => {
+    const finalText = text || question || selectedHistory;
+    if (!finalText?.trim()) return;
+
     setLoader(true);
-    console.log('this is one')
-    const textToSave = question.trim() ? question : selectedHistory.trim();
-    if (!recentHistory.includes(textToSave)) {
+
+    // ✅ Sirf tab history save hogi jab user input kare (history se click na ho)
+    if (!fromHistory) {
+      const textToSave = finalText.replace(/\s+/g, " ").trim();
+      const normalized = textToSave.toLowerCase();
+
       let history = JSON.parse(localStorage.getItem("history")) || [];
-      history = history.filter((item) => item !== textToSave);
-      history = [textToSave, ...history].slice(0, 30); // Optional limit to 30 entries
+
+      // ✅ Remove duplicates
+      history = history.filter(
+        (item) => item.replace(/\s+/g, " ").trim().toLowerCase() !== normalized
+      );
+
+      // ✅ Capitalize first letter
+      const cleanSave =
+        textToSave.charAt(0).toUpperCase() + textToSave.slice(1);
+      history.unshift(cleanSave);
+
+      // ✅ Limit history 30 items
+      history = history.slice(0, 30);
 
       localStorage.setItem("history", JSON.stringify(history));
       setRecentHistory(history);
     }
 
-    const payLoadData = text
-      ? text
-      : question.trim()
-      ? question
-      : selectedHistory.trim();
-      const payload = {
-        contents: [
-          {
-            parts: [{ text: payLoadData }],
-          },
-        ],
-      };
-      setQuestion("");
+    // Add new user message to local chat history
+    setChatHistory((prev) => [...prev, { role: "user", content: finalText }]);
+
+    // Create payload with full chat context
+    const payload = {
+      contents: [
+        ...chatHistory.map((msg) => ({
+          role: msg.role === "assistant" ? "model" : "user",
+          parts: [{ text: msg.content }],
+        })),
+        {
+          role: "user",
+          parts: [{ text: finalText }],
+        },
+      ],
+    };
+
+    setQuestion("");
+
     const response = await fetch(URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+
     const res = await response.json();
     const data =
       res.candidates?.[0]?.content?.parts?.[0]?.text ||
       res.candidates?.[0]?.content?.[0]?.text ||
-      "";
-    const dataString = data.includes("*") ? data.split("* ") : [data]; // if no bullets, keep full text
-    const dataString2 = dataString.map((elm) => elm.trim());
-    const finalQuestion = text || question || selectedHistory;
+      "Error: No response";
+
+    setChatHistory((prev) => [...prev, { role: "assistant", content: data }]);
+    const dataString = data.includes("*") ? data.split("* ") : [data];
+    const cleaned = dataString.map((t) => t.trim());
+
     setResult((prev) => [
       ...prev,
-      { type: "q", text: finalQuestion },
-      { type: "a", text: dataString2 },
+      { type: "q", text: finalText },
+      { type: "a", text: cleaned },
     ]);
+
     setTimeout(() => {
       scrollToAns.current?.scrollTo({
         top: scrollToAns.current.scrollHeight,
         behavior: "smooth",
       });
-    }, 50);
-setTimeout(() => setLoader(false), 500);  
-    console.log('this is tow')
+    }, 100);
 
-};
-
+    setTimeout(() => setLoader(false), 300);
+  };
 
   const isEnter = (event) => {
     if (event.key == "Enter") {
@@ -120,28 +147,33 @@ setTimeout(() => setLoader(false), 500);
           recentHistory={recentHistory}
           setRecentHistory={setRecentHistory}
         />
-        <div className='md:col-span-8 col-span-6  md:w-[80vw] absolute right-1 w-[99vw]'>
-          <h1 className='text-3xl md:text-4xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl mt-10 px-2'>
-            Hello User , Ask Me Anything
-          </h1>
-          {loader ? (
-            <div className='flex justify-center'>
-              <img src='/spinner.svg' alt='' className='w-10' />
-            </div>
-          ) : null}
+        <div className='md:col-span-8 col-span-10  md:w-[80vw] md:absolute md:right-1 w-[99vw]'>
           <div
             ref={scrollToAns}
-            className='h-[75vh] overflow-y-auto pr-2 pb-[20vh]'
+            className='h-[75vh] overflow-y-auto pr-2 pb-[15vh]'
           >
-            <div className='dark:text-zinc-300 px-[5vw]  md:pl-[5vw] md:pr-[7vw]'>
+            <div className='dark:text-zinc-300 px-[5vw]  md:pr-[3vw] lg:px-[8vw] md:pl-[6vw]'>
+              {" "}
+              <h1 className='text-3xl md:text-4xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl  px-2'>
+                Hello User , Ask Me Anything
+              </h1>
+             
               {result.map((item, index) => (
-                <QuestionAns item={item} index={index} key={index} />
+                <div>
+                   
+                  <QuestionAns item={item} index={index} key={index} />
+                  
+                </div>
               ))}
             </div>
+            {loader ? (
+                    <div className='flex justify-center py-4'>
+                      <img src='/spinner.svg' alt='' className='w-10' />
+                    </div>
+                  ) : null}
           </div>
           <div
-            className='flex dark:bg-zinc-800 bg-white md:w-[50vw] dark:text-white m-auto rounded-full border dark:border-zinc-700 border-zinc-500 
-        fixed z-40  w-auto bottom-[15vh]  md:left-[35vw] left-[7vw] right-[7vw] md:right-[10vw] shadow-[0_0_5px_0.5px_gray] dark:shadow-none p-1'
+            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed bottom-[15vh] shadow-[0_0_5px_0.5px_gray] dark:shadow-none p-1'
           >
             <input
               value={question}

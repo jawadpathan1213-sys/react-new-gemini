@@ -7,8 +7,9 @@ const QuestionAns = ({item, index }) => {
        <div
                 className={`${item.type == "q" ? "flex justify-end" : ""} py-2`}
                 key={index}
-              >
+              > 
                 {item.type == "q" ? (
+                  
                   <li className=' text-right px-1 py-0.5 md:px-2 md:py-1 rounded-tl-4xl rounded-br-4xl rounded-bl-4xl border border-zinc-300 dark:border-zinc-700 bg-zinc-300 dark:bg-zinc-700 list-none wrap-break-word'>
                     <Answers
                       ans={item.text}
@@ -19,7 +20,7 @@ const QuestionAns = ({item, index }) => {
                   </li>
                 ) : (
                   item.text.map((ansItem, ansIndex) => (
-                    <li className='text-left min-w-[70vw] list-none wrap-break-word' key={ansIndex}>
+                    <li className='text-left  list-none ' key={ansIndex}>
                       <Answers
                         ans={ansItem}
                         index={ansIndex}
