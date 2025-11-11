@@ -58,11 +58,11 @@ const components = {
      
     <div className='flex w-full my-0.5 sm:my-3 max-w-[90vw] ]' >
       {index === 0 && totalResult > 1 ? (
-        <span className='font-medium sm:text-[25px] text-[16px] dark:text-white mb-1' style={{lineHeight:'20px'}}>
+        <span className='font-medium sm:text-[25px] text-[14px] dark:text-white mb-1' style={{lineHeight:'20px'}}>
           {answer}
         </span>
       ) : heading ? (
-        <span className='font-medium sm:text-[23px] text-[15px] dark:text-white' style={{lineHeight:'20px'}}>
+        <span className='font-medium sm:text-[23px] text-[13px] dark:text-white' style={{lineHeight:'20px'}}>
           {answer}
         </span>
       ) : (
