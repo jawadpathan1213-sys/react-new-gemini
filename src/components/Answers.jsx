@@ -62,7 +62,7 @@ const components = {
           {answer}
         </span>
       ) : heading ? (
-        <span className='font-medium sm:text-[23px] text-[13px] dark:text-white' style={{lineHeight:'20px'}}>
+        <span className='font-medium sm:text-[23px] text-[13px] dark:text-white ' style={{lineHeight:'20px'}}>
           {answer}
         </span>
       ) : (

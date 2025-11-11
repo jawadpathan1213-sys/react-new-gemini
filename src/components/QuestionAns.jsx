@@ -10,7 +10,7 @@ const QuestionAns = ({item, index }) => {
               > 
                 {item.type == "q" ? (
                   
-                  <li className=' text-right px-1  md:px-2 sm:py-1 py-0.5 rounded-tl-3xl rounded-br-3xl rounded-bl-3xl border border-zinc-300 dark:border-zinc-700 bg-zinc-300 dark:bg-zinc-700 list-none wrap-break-word'>
+                  <li className=' text-right px-1 my-1  md:px-2 sm:py-1 py-0.3 rounded-tl-3xl rounded-br-3xl rounded-bl-3xl border border-zinc-300 dark:border-zinc-700 bg-zinc-300 dark:bg-zinc-700 list-none wrap-break-word'>
                     <Answers
                       ans={item.text}
                       index={0}
@@ -20,7 +20,7 @@ const QuestionAns = ({item, index }) => {
                   </li>
                 ) : (
                   item.text.map((ansItem, ansIndex) => (
-                    <li className='text-left  list-none ' key={ansIndex}>
+                    <li className='text-left  list-none my-1' key={ansIndex}>
                       <Answers
                         ans={ansItem}
                         index={ansIndex}
