@@ -70,7 +70,7 @@ const components = {
         <div
           className={
             type === "q"
-              ? " sm:px-3 px-2  md:max-w-[80%] w-fit sm:text-[16px] text-[11px]" // question card: let it be half width on md+, full on mobile
+              ? " sm:px-3 px-2  md:max-w-[50vw] w-fit max-w- sm:text-[16px] text-[11px]" // question card: let it be half width on md+, full on mobile
               : "md:pl-3 pl-1 my-2 md:w-[60vw] w-full max-w-[90vw] sm:text-[16px] text-[11px]"
           }
         >
