@@ -22,12 +22,12 @@ const RecentSearch = ({ setRecentHistory, askQuestion , setSelectedHistory, rece
     console.log(selectedItem)
   }
   return (<>
-        <div className='py-1 px-3 md:hidden flex fixed top-2 left-3 z-40 ' onClick={() => setNav(!nav)}>
-        <FaBars className='dark:text-white text-black text-2xl'/>
+        <div className=' md:hidden flex fixed top-2 left-2 sm:top-3 sm:left-3 z-40 ' onClick={() => setNav(!nav)}>
+        <FaBars className='dark:text-white text-black sm:text-2xl text-xl'/>
         </div>
     <div>
     
-      <div className={`${nav?'block' :'hidden'} md:w-[20vw] md:block min-w-[250px] md:min-w-[200px] col-span-4 dark:bg-zinc-800 bg-zinc-200 w-[40vw] fixed h-screen pt-3 z-30`}>
+      <div className={`${nav?'block' :'hidden'} md:w-[20vw] md:block min-w-[220px] md:min-w-[200px] col-span-4 dark:bg-zinc-800 bg-zinc-200 w-[40vw] fixed h-screen pt-3 z-30`}>
         <h1 className='text-xl dark:text-white flex justify-center items-center gap-2 flex-col relative top-10 md:static'>
           <span>Recent Search</span>
           <span className='flex gap-2'>

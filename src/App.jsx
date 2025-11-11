@@ -130,7 +130,7 @@ const App = () => {
       <div className='grid grid-cols-10 h-screen text-center'>
         <select
           onChange={(e) => setDarkMode(e.target.value)}
-          className='dark:text-white text-black z-40 fixed top-3 right-3 px-3 py-1 dark:bg-zinc-800 bg-zinc-200 border rounded-4xl h-10'
+          className='text-[11px] sm:text-[16px] dark:text-white text-black z-40 fixed sm:top-3 top-1 right-1 sm:right-3 sm:px-3 px-1 sm:py-1 py-0 dark:bg-zinc-800 bg-zinc-200 border rounded-4xl sm:h-10 h-7'
         >
           <option value='dark' className=''>
             Dark
@@ -150,11 +150,11 @@ const App = () => {
         <div className='md:col-span-8 col-span-10  md:w-[80vw] md:absolute md:right-1 w-[99vw]'>
           <div
             ref={scrollToAns}
-            className='h-[75vh] overflow-y-auto pr-2 pb-[15vh]'
+            className='sm:h-[80vh] h-[90vh] overflow-y-auto pr-2 sm:pb-[15vh] pb-1'
           >
             <div className='dark:text-zinc-300 px-[5vw]  md:pr-[3vw] lg:px-[8vw] md:pl-[6vw]'>
               {" "}
-              <h1 className='text-3xl md:text-4xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl  px-2 min-w-[230px]'>
+              <h1 className='text-xl md:text-4xl sm:2xl bg-clip-text text-transparent bg-linear-to-r from-pink-700 to-violet-700 h-20 xl:text-5xl px-2 '>
                 Hello User , Ask Me Anything
               </h1>
              
@@ -173,7 +173,7 @@ const App = () => {
                   ) : null}
           </div>
           <div
-            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed sm:bottom-[15vh] bottom-2 shadow-[0_0_5px_0.5px_gray] dark:shadow-none sm:p-1 p-0.5'
+            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed sm:bottom-[15vh] bottom-2 shadow-[0_0_5px_0.5px_gray] dark:shadow-none sm:p-1 p-0.5 pl-2'
           >
             <input
               value={question}
@@ -191,7 +191,7 @@ const App = () => {
               className='md:mx-4 mx-2 cursor-pointer '
             >
               <FaArrowUp
-                className={`rounded-full sm:w-9 w-7 sm:h-9 h-7 sm:p-2 p-1 ${
+                className={`rounded-full sm:w-9 w-6 sm:h-9 h-6 sm:p-2 p-1 ${
                   question.trim() === ""
                     ? "dark:bg-zinc-600 bg-zinc-300 dark:text-zinc-200 text-zinc-800"
                     : "dark:text-black dark:bg-zinc-200 bg-zinc-900 text-zinc-50"
