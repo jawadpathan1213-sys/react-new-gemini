@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback  } from "react";
 import { URL } from "./const.js";
 import RecentSearch from "./components/RecentSearch.jsx";
 import QuestionAns from "./components/QuestionAns.jsx";
@@ -14,7 +14,6 @@ const App = () => {
   useEffect(() => {
     const history = JSON.parse(localStorage.getItem("history")) || [];
     setRecentHistory(history);
-    console.log(history);
   }, []);
 
   const [question, setQuestion] = useState("");
@@ -24,90 +23,81 @@ const App = () => {
   const [recentHistory, setRecentHistory] = useState(
     JSON.parse(localStorage.getItem("history")) || []
   );
-  const [ask, setAsk] = useState(false);
   const [loader, setLoader] = useState(false);
   const scrollToAns = useRef();
 
-  const askQuestion = async (text, fromHistory = false) => {
-    const finalText = text || question || selectedHistory;
-    if (!finalText?.trim()) return;
+ const askQuestion = useCallback(async (text, fromHistory = false) => {
+  const finalText = text || question || selectedHistory;
+  if (!finalText?.trim()) return;
 
-    setLoader(true);
+  setLoader(true);
 
-    // ✅ Sirf tab history save hogi jab user input kare (history se click na ho)
-    if (!fromHistory) {
-      const textToSave = finalText.replace(/\s+/g, " ").trim();
-      const normalized = textToSave.toLowerCase();
+  if (!fromHistory) {
+    const textToSave = finalText.replace(/\s+/g, " ").trim();
+    const normalized = textToSave.toLowerCase();
 
-      let history = JSON.parse(localStorage.getItem("history")) || [];
+    let history = JSON.parse(localStorage.getItem("history")) || [];
 
-      // ✅ Remove duplicates
-      history = history.filter(
-        (item) => item.replace(/\s+/g, " ").trim().toLowerCase() !== normalized
-      );
+    history = history.filter(
+      (item) => item.replace(/\s+/g, " ").trim().toLowerCase() !== normalized
+    );
 
-      // ✅ Capitalize first letter
-      const cleanSave =
-        textToSave.charAt(0).toUpperCase() + textToSave.slice(1);
-      history.unshift(cleanSave);
+    const cleanSave =
+      textToSave.charAt(0).toUpperCase() + textToSave.slice(1);
 
-      // ✅ Limit history 30 items
-      history = history.slice(0, 30);
+    history.unshift(cleanSave);
+    history = history.slice(0, 30);
 
-      localStorage.setItem("history", JSON.stringify(history));
-      setRecentHistory(history);
-    }
+    localStorage.setItem("history", JSON.stringify(history));
+    setRecentHistory(history);
+  }
 
-    // Add new user message to local chat history
-    setChatHistory((prev) => [...prev, { role: "user", content: finalText }]);
+  setChatHistory((prev) => [...prev, { role: "user", content: finalText }]);
 
-    // Create payload with full chat context
-    const payload = {
-      contents: [
-        ...chatHistory.map((msg) => ({
-          role: msg.role === "assistant" ? "model" : "user",
-          parts: [{ text: msg.content }],
-        })),
-        {
-          role: "user",
-          parts: [{ text: finalText }],
-        },
-      ],
-    };
-
-    setQuestion("");
-
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const res = await response.json();
-    const data =
-      res.candidates?.[0]?.content?.parts?.[0]?.text ||
-      res.candidates?.[0]?.content?.[0]?.text ||
-      "Error: No response";
-
-    setChatHistory((prev) => [...prev, { role: "assistant", content: data }]);
-    const dataString = data.includes("*") ? data.split("* ") : [data];
-    const cleaned = dataString.map((t) => t.trim());
-
-    setResult((prev) => [
-      ...prev,
-      { type: "q", text: finalText },
-      { type: "a", text: cleaned },
-    ]);
-
-    setTimeout(() => {
-      scrollToAns.current?.scrollTo({
-        top: scrollToAns.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 100);
-
-    setTimeout(() => setLoader(false), 300);
+  const payload = {
+    contents: [
+      ...chatHistory.map((msg) => ({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.content }],
+      })),
+      { role: "user", parts: [{ text: finalText }] },
+    ],
   };
+
+  setQuestion("");
+
+  const response = await fetch(URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const res = await response.json();
+  const data =
+    res?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "Error: No response";
+
+  setChatHistory((prev) => [...prev, { role: "assistant", content: data }]);
+
+  const cleaned = (data.includes("*") ? data.split("* ") : [data]).map((t) =>
+    t.trim()
+  );
+
+  setResult((prev) => [
+    ...prev,
+    { type: "q", text: finalText },
+    { type: "a", text: cleaned },
+  ]);
+
+  setTimeout(() => {
+    scrollToAns.current?.scrollTo({
+      top: scrollToAns.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, 100);
+
+  setTimeout(() => setLoader(false), 300);
+}, [chatHistory, question, selectedHistory]);
 
   const isEnter = (event) => {
     if (event.key == "Enter") {
@@ -150,7 +140,7 @@ const App = () => {
         <div className='md:col-span-8 col-span-10  md:w-[80vw] md:absolute md:right-1 w-[99vw]'>
           <div
             ref={scrollToAns}
-            className='sm:h-[80vh] h-[90vh] overflow-y-auto pr-2 sm:pb-[15vh] pb-1'
+            className='h-[75vh]  overflow-y-auto pr-2 sm:pb-[15vh] pb-1'
           >
             <div className='dark:text-zinc-300 px-[5vw]  md:pr-[3vw] lg:px-[8vw] md:pl-[6vw]'>
               {" "}
@@ -159,11 +149,9 @@ const App = () => {
               </h1>
              
               {result.map((item, index) => (
-                <div>
                    
                   <QuestionAns item={item} index={index} key={index} />
                   
-                </div>
               ))}
             </div>
             {loader ? (
@@ -173,25 +161,24 @@ const App = () => {
                   ) : null}
           </div>
           <div
-            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed sm:bottom-[15vh] bottom-2 shadow-[0_0_5px_0.5px_gray] dark:shadow-none sm:p-1 p-0.5 pl-2'
+            className='flex dark:bg-zinc-800 bg-white  dark:text-white  rounded-full border dark:border-zinc-700 border-zinc-500 lg:right-[20vw] lg:left-[35vw] md:right-[10vw] md:left-[30vw] sm:right-[20vw] sm:left-[20vw] right-[10vw] left-[10vw] fixed sm:bottom-[15vh] bottom-2 shadow-[0_0_5px_0.5px_gray] dark:shadow-none sm:p-1 p-0 pl-2'
           >
             <input
               value={question}
               onKeyDown={isEnter}
               onChange={(e) => {
                 setQuestion(e.target.value);
-                setAsk(true);
               }}
               type='text'
               placeholder='Ask me anthing'
-              className='w-full h-full md:p-4 sm:p-2 p-1 outline-none'
+              className='w-full h-full md:p-4 sm:p-2 p-1 outline-none sm:text-[16px] text-[11px]'
             />
             <button
               onClick={() => askQuestion()}
-              className='md:mx-4 mx-2 cursor-pointer '
+              className='md:mx-4 sm:mx-2 mx-1 cursor-pointer '
             >
               <FaArrowUp
-                className={`rounded-full sm:w-9 w-6 sm:h-9 h-6 sm:p-2 p-1 ${
+                className={`rounded-full sm:w-9 w-5 sm:h-9 h-5 sm:p-2 p-1 ${
                   question.trim() === ""
                     ? "dark:bg-zinc-600 bg-zinc-300 dark:text-zinc-200 text-zinc-800"
                     : "dark:text-black dark:bg-zinc-200 bg-zinc-900 text-zinc-50"

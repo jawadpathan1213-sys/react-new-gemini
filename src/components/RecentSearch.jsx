@@ -19,7 +19,6 @@ const RecentSearch = ({ setRecentHistory, askQuestion , setSelectedHistory, rece
     })
     setRecentHistory(history)
     localStorage.setItem('history', JSON.stringify(history))
-    console.log(selectedItem)
   }
   return (<>
         <div className=' md:hidden flex fixed top-2 left-2 sm:top-3 sm:left-3 z-40 ' onClick={() => setNav(!nav)}>

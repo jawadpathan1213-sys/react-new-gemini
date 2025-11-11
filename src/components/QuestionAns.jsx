@@ -35,4 +35,5 @@ const QuestionAns = ({item, index }) => {
   )
 }
 
-export default QuestionAns
+export default React.memo(QuestionAns);
+
